@@ -1,21 +1,18 @@
-#[derive(Debug)]
-struct CdiEvent {
-  description:String,
-  amount:i64,
+use axum::{
+  routing::get,
+  Router,
+};
+
+#[tokio::main]
+async fn main() {
+  let app = Router::new().route("/health", get(health_check));
+
+  let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await.unwrap();
+
+  println!("Silva Bank API rodando em http://127.0.0.1:3000");
+  axum::serve(listener, app).await.unwrap(); 
 }
 
-#[derive(Debug)]
-struct Wallet {
-  owner:String,
-  balance:i64,
-  cdi_events: Vec<CdiEvent>
-}
-
-fn main() {
-  let wallet = Wallet {
-    owner: "Silva".to_string(),
-    balance:0, 
-  };
-
-  println!("Balance: {:?}, Owner: {:?}", wallet.balance, wallet.owner);
+async fn health_check() -> &'static str {
+  "Hello Silva Bank!"
 }
